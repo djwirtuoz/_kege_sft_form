@@ -16,9 +16,9 @@ namespace _kege_sft_form
 {
     public partial class ch_kege_sft_frm : Form
     {
-        List<RegisteredSoftware> programs = new List<RegisteredSoftware>();
+        static List<RegisteredSoftware> programs = new List<RegisteredSoftware>();
+        static List<RegisteredSoftware> selected_programs = new List<RegisteredSoftware>();
         RegisteredSoftware current_programm = new RegisteredSoftware();
-        string[] string_programm;
         List<string> list_program = new List<string>();
         List<string> list_groups = new List<string>();
         List<String> list_group_del = new List<string>();
@@ -76,15 +76,16 @@ namespace _kege_sft_form
                 // обход всех узлов в корневом элементе
                 foreach (XmlElement xnode in xRoot)
                 {
+                    current_programm = new RegisteredSoftware();
                     // обходим все дочерние узлы элемента user
                     foreach (XmlNode childnode in xnode.ChildNodes)
                     {
-                        // если узел - company
+                        // если узел - d
                         if (childnode.Name == "Id")
                         {
                             current_programm.Id = childnode.InnerText;
                         }
-                        // если узел age
+                        // если узел RegisterType
                         if (childnode.Name == "RegisterType")
                         {
                             current_programm.RegisterType = childnode.InnerText;
@@ -110,7 +111,7 @@ namespace _kege_sft_form
                             current_programm.ProgrammingLanguage = childnode.InnerText;
                         }
                     }
-                    programs.AddRange(new[] { current_programm });
+                    programs.Add(current_programm);
                     list_program.AddRange(new[] { current_programm.Name });
                     list_groups.AddRange(new[] { current_programm.SoftwareType });
                     list_group_del = list_groups.Distinct().ToList();
@@ -152,6 +153,24 @@ namespace _kege_sft_form
 
         private void saveBTN_Click(object sender, EventArgs e)
         {
+            var selectedLV = listView1.CheckedItems;
+
+            for (int i = 0; i < programs.Count; i++)
+            {
+                for (int j = 0; j < selectedLV.Count; j++) 
+                {
+                    if (programs[i].Name == selectedLV[j].Text)
+                    {
+                        selected_programs.Add(programs[i]);
+                    }
+                }
+            }
+
+            SaveXML();
+        }
+
+        private void SaveXML()
+        {
             XmlWriterSettings xmlWriterSettings = new XmlWriterSettings();
             xmlWriterSettings.Encoding = Encoding.GetEncoding("utf-16");
             xmlWriterSettings.Indent = true;
@@ -163,32 +182,32 @@ namespace _kege_sft_form
             xW.WriteAttributeString(@"xmlnsxsd", @"http://www.w3.org/2001/XMLSchema");
             xW.WriteAttributeString(@"xmlnsxsi", @"http://www.w3.org/2001/XMLSchema-instance");
 
-            for (int i = 0; i < list_program.Count; i++) 
+            for (int i = 0; i < selected_programs.Count; i++)
             {
                 xW.WriteStartElement("RegisteredSoftware");
 
                 xW.WriteStartElement("Id");
-                xW.WriteString(programs[i].Id);
+                xW.WriteString(selected_programs[i].Id);
                 xW.WriteEndElement();
 
                 xW.WriteStartElement("RegisterType");
-                xW.WriteString(programs[i].RegisterType);
+                xW.WriteString(selected_programs[i].RegisterType);
                 xW.WriteEndElement();
 
                 xW.WriteStartElement("SoftwareType");
-                xW.WriteString(programs[i].SoftwareType);
+                xW.WriteString(selected_programs[i].SoftwareType);
                 xW.WriteEndElement();
 
                 xW.WriteStartElement("Name");
-                xW.WriteString(programs[i].Name);
+                xW.WriteString(selected_programs[i].Name);
                 xW.WriteEndElement();
 
                 xW.WriteStartElement("Version");
-                xW.WriteString(programs[i].Version);
+                xW.WriteString(selected_programs[i].Version);
                 xW.WriteEndElement();
 
                 xW.WriteStartElement("ProgrammingLanguage");
-                xW.WriteString(programs[i].ProgrammingLanguage);
+                xW.WriteString(selected_programs[i].ProgrammingLanguage);
                 xW.WriteEndElement();
 
                 xW.WriteEndElement();
@@ -197,6 +216,11 @@ namespace _kege_sft_form
             xW.Close();
 
             MessageBox.Show("Файл сохранен по пути: " + save_path, "Файл сохранен", MessageBoxButtons.OK);
+        }
+
+        private void toBase64()
+        {
+
         }
     }
 }
