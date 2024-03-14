@@ -134,21 +134,16 @@ namespace _kege_sft_form
 
             for (int i = 0; i < programs.Count; i++)
             {
-                if (list_groups[i] == list_group_del[0])
+                for(int j = 0; j <  list_group_del.Count; j++)
                 {
-                    listView1.Items[i].Group = listView1.Groups[0];
-                }
-
-                if (list_groups[i] == list_group_del[1])
-                {
-                    listView1.Items[i].Group = listView1.Groups[1];
-                }
-
-                if (list_groups[i] == list_group_del[2])
-                {
-                    listView1.Items[i].Group = listView1.Groups[2];
+                    if (list_groups[i] == list_group_del[j])
+                    {
+                        listView1.Items[i].Group = listView1.Groups[j];
+                    }
                 }
             }
+
+            saveBTN.Enabled = true;
         }
 
         private void saveBTN_Click(object sender, EventArgs e)
@@ -228,6 +223,7 @@ namespace _kege_sft_form
             FileStream fstream = null;
             try
             {
+                if(File.Exists(save_path)) { File.Delete(save_path); }
                 fstream = new FileStream(save_path, FileMode.OpenOrCreate);
                 fstream.Write(code_data, 0, code_data.Length);
             }
