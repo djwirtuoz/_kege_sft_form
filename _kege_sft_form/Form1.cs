@@ -27,7 +27,7 @@ namespace _kege_sft_form
             openFileDialog1.Filter = "SFT files(*.sft)|*.sft";
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void openBTN_Click(object sender, EventArgs e)
         {
             listView1.Items.Clear();
             programs.Clear();
@@ -234,8 +234,25 @@ namespace _kege_sft_form
             finally
             {
                 fstream.Close();
-                MessageBox.Show("Файл сохранен по пути: " + save_path, "Файл сохранен", MessageBoxButtons.OK);
+
+                bool csf = check_save_file();
+
+                if (true)
+                {
+                    MessageBox.Show("Файл сохранен по пути: " + save_path, "Файл сохранен", MessageBoxButtons.OK);
+                }
             }
+        }
+
+        bool check_save_file()
+        {
+            try
+            {
+                fileText = File.ReadAllText(save_path);
+                // декодируем в биты
+                var decode_file_bit = Convert.FromBase64String(fileText);
+                return true;
+            }catch { MessageBox.Show("Error ", "Save file error, try again", MessageBoxButtons.OK); return false; }
         }
     }
 }

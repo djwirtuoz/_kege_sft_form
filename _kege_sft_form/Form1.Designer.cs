@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.button1 = new System.Windows.Forms.Button();
+            this.openBTN = new System.Windows.Forms.Button();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.listView1 = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -37,15 +37,15 @@
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
-            // button1
+            // openBTN
             // 
-            this.button1.Location = new System.Drawing.Point(456, 12);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "Open .sft";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.openBTN.Location = new System.Drawing.Point(456, 12);
+            this.openBTN.Name = "openBTN";
+            this.openBTN.Size = new System.Drawing.Size(75, 23);
+            this.openBTN.TabIndex = 0;
+            this.openBTN.Text = "Open .sft";
+            this.openBTN.UseVisualStyleBackColor = true;
+            this.openBTN.Click += new System.EventHandler(this.openBTN_Click);
             // 
             // textBox1
             // 
@@ -105,7 +105,7 @@
             this.Controls.Add(this.saveBTN);
             this.Controls.Add(this.listView1);
             this.Controls.Add(this.textBox1);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.openBTN);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.Name = "ch_kege_sft_frm";
@@ -117,7 +117,7 @@
 
         #endregion
 
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button openBTN;
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.ListView listView1;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
