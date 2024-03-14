@@ -1,16 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
 using System.Xml;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace _kege_sft_form
 {
@@ -19,7 +13,6 @@ namespace _kege_sft_form
         static List<RegisteredSoftware> programs = new List<RegisteredSoftware>();
         static List<RegisteredSoftware> selected_programs = new List<RegisteredSoftware>();
         RegisteredSoftware current_programm = new RegisteredSoftware();
-        List<string> list_program = new List<string>();
         List<string> list_groups = new List<string>();
         List<String> list_group_del = new List<string>();
         string fileText;
@@ -36,6 +29,14 @@ namespace _kege_sft_form
 
         private void button1_Click(object sender, EventArgs e)
         {
+            listView1.Items.Clear();
+            programs.Clear();
+            selected_programs.Clear();
+            list_groups.Clear();
+            list_group_del.Clear();
+            fileText = "";
+            decode_file = "";
+
             if (openFileDialog1.ShowDialog() == DialogResult.Cancel)
                 return;
 
@@ -80,7 +81,7 @@ namespace _kege_sft_form
                     // обходим все дочерние узлы элемента user
                     foreach (XmlNode childnode in xnode.ChildNodes)
                     {
-                        // если узел - d
+                        // если узел - id
                         if (childnode.Name == "Id")
                         {
                             current_programm.Id = childnode.InnerText;
@@ -112,7 +113,6 @@ namespace _kege_sft_form
                         }
                     }
                     programs.Add(current_programm);
-                    list_program.AddRange(new[] { current_programm.Name });
                     list_groups.AddRange(new[] { current_programm.SoftwareType });
                     list_group_del = list_groups.Distinct().ToList();
                 }
@@ -127,12 +127,12 @@ namespace _kege_sft_form
                 listView1.Groups.Add(new ListViewGroup(gp.ToString()));
             }
 
-            foreach(string item in list_program)
+            for (int j = 0; j < programs.Count; j++)
             {
-                listView1.Items.Add(item.ToString()).Checked = true;
+                listView1.Items.Add(programs[j].Name).Checked = true;
             }
 
-            for (int i = 0; i < list_program.Count; i++)
+            for (int i = 0; i < programs.Count; i++)
             {
                 if (list_groups[i] == list_group_del[0])
                 {
@@ -175,7 +175,7 @@ namespace _kege_sft_form
             xmlWriterSettings.Encoding = Encoding.GetEncoding("utf-16");
             xmlWriterSettings.Indent = true;
 
-            XmlWriter xW = XmlWriter.Create("test_doc.xml", xmlWriterSettings);
+            XmlWriter xW = XmlWriter.Create("new.xml", xmlWriterSettings);
 
             xW.WriteStartDocument();
             xW.WriteStartElement("ArrayOfRegisteredSoftware");
@@ -215,12 +215,31 @@ namespace _kege_sft_form
             xW.WriteEndDocument();
             xW.Close();
 
-            MessageBox.Show("Файл сохранен по пути: " + save_path, "Файл сохранен", MessageBoxButtons.OK);
+            toBase64();
         }
 
         private void toBase64()
         {
+            string new_xml_file_text = File.ReadAllText("new.xml");
+            byte[] code_data = Encoding.UTF8.GetBytes(new_xml_file_text);
+            var code_file_to64 = Convert.ToBase64String(code_data);
+            code_data = Encoding.UTF8.GetBytes(code_file_to64);
 
+            FileStream fstream = null;
+            try
+            {
+                fstream = new FileStream(save_path, FileMode.OpenOrCreate);
+                fstream.Write(code_data, 0, code_data.Length);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error ", "Write error", MessageBoxButtons.OK);
+            }
+            finally
+            {
+                fstream.Close();
+                MessageBox.Show("Файл сохранен по пути: " + save_path, "Файл сохранен", MessageBoxButtons.OK);
+            }
         }
     }
 }
