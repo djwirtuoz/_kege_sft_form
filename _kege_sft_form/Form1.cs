@@ -122,16 +122,25 @@ namespace _kege_sft_form
 
         private void UpdateLV()
         {
+            // Ищем все группы и добавляем в лист итем
             foreach (string gp in list_group_del)
             {
                 listView1.Groups.Add(new ListViewGroup(gp.ToString()));
             }
 
+            // добавляем элементы в лист итем
             for (int j = 0; j < programs.Count; j++)
             {
-                listView1.Items.Add(programs[j].Name).Checked = true;
+                ListViewItem lvitems = new ListViewItem();
+                ListViewItem.ListViewSubItem lvsubitems = new ListViewItem.ListViewSubItem();
+
+                lvitems.Text = programs[j].Name;
+                lvsubitems.Text = programs[j].Version;
+                lvitems.SubItems.Add(lvsubitems);
+                listView1.Items.Add(lvitems).Checked = true;
             }
 
+            // группируем элементы
             for (int i = 0; i < programs.Count; i++)
             {
                 for(int j = 0; j <  list_group_del.Count; j++)
