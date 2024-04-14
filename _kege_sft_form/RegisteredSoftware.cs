@@ -1,6 +1,6 @@
 ﻿namespace _kege_sft_form
 {
-    internal class RegisteredSoftware
+    public class RegisteredSoftware
     {
         public string Id { get; set;  }
         public string RegisterType { get; set; }

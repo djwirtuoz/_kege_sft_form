@@ -10,13 +10,14 @@ namespace _kege_sft_form
 {
     public partial class ch_kege_sft_frm : Form
     {
-        static List<RegisteredSoftware> programs = new List<RegisteredSoftware>();
+        public static List<RegisteredSoftware> programs = new List<RegisteredSoftware>();
         static List<RegisteredSoftware> selected_programs = new List<RegisteredSoftware>();
         RegisteredSoftware current_programm = new RegisteredSoftware();
         List<string> list_groups = new List<string>();
-        List<String> list_group_del = new List<string>();
+        List<string> list_group_del = new List<string>();
         string fileText;
         string decode_file;
+        int selected_item_index = 0;
 
         string save_path;
 
@@ -120,8 +121,9 @@ namespace _kege_sft_form
             UpdateLV();
         }
 
-        private void UpdateLV()
+        public void UpdateLV()
         {
+            listView1.Items.Clear();
             // Ищем все группы и добавляем в лист итем
             foreach (string gp in list_group_del)
             {
@@ -262,6 +264,41 @@ namespace _kege_sft_form
                 var decode_file_bit = Convert.FromBase64String(fileText);
                 return true;
             }catch { MessageBox.Show("Error ", "Save file error, try again", MessageBoxButtons.OK); return false; }
+        }
+
+        private void reToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Edit_frm edit_frm = new Edit_frm(this.UpdateLV) { Owner = this };
+
+            if(listView1.SelectedItems.Count > 0 && listView1.SelectedItems.Count < 2)
+            {
+                using (var edit_form = new Edit_frm(this.UpdateLV))
+                {
+                    for(int i = 0; i < programs.Count; i++)
+                    {
+                        if (programs[i].Name == listView1.SelectedItems[0].Text)
+                        {
+                            selected_item_index = i;
+                            break;
+                        }
+                    }
+
+                    edit_form.editabel_item = programs[selected_item_index];
+                    edit_form.index = selected_item_index;
+
+                    //показываем форму
+                    edit_form.ShowDialog();
+
+                }
+            }// проходимся по всем элементам programs, ищем индекс элемента по имени выделенного и передаем в форму2 этот элемент
+        }
+
+        private void listView1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if(listView1.SelectedItems.Count != 0)
+            {
+                reToolStripMenuItem.Enabled = true;
+            }else { reToolStripMenuItem.Enabled = false; }
         }
     }
 }
